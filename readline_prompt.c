@@ -1,21 +1,40 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+
+// If we are compiling on Windows, compile these functions:
+#ifdef _WIN32
+
+#include <string.h>
+
+static char buffer[2048];
+
+// Fake readline function
+char* readline(char* prompt) 
+{
+		fputs(prompt, stdout);
+		fgets(buffer, 2048, stdin);
+		char* cpy = malloc(stlen(buffer) + 1);
+		strcpy(cpy, buffer);
+		cpy(stlen(cpy) - 1] = '\0';
+		return cpy;
+}
+
+void add_history(char* unused) { }
+
+// Otherwise, include readline
+#else
+
 #include <readline/readline.h>
 #include <readline/history.h>
+
+#endif
  
-int main()
-{
+int main() {
     char* input, shell_prompt[100];
-	int out_chars;
- 
-    // Configure readline to auto-complete paths when the tab key is hit.
-    //rl_bind_key('\t', rl_complete);
 
 	// Version and exit info
-	puts("Liscp Version 0.0.0.0.1");
+	puts("Liscp Version 0.0.0.0.2");
 	puts("Press ctrl-c to exit\n");
-		
  
     while(1) {
         // Output prompt
